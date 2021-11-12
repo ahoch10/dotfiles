@@ -241,3 +241,5 @@ source $HOME/.asdf/completions/asdf.bash
 
 # Prevent file creation permissions annoyances
 umask 022
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash

@@ -153,6 +153,39 @@ Plug 'vim-python/python-syntax'
 " Indentation
 Plug 'Vimjas/vim-python-pep8-indent'
 
+"File navigation
+Plug 'Shougo/defx.nvim'
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
+
+"Auto-completion
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+for coc_plugin in [
+      \ 'coc-extensions/coc-svelte',
+      \ 'fannheyward/coc-markdownlint',
+      \ 'pappasam/coc-jedi',
+      \ 'neoclide/coc-css',
+      \ 'neoclide/coc-html',
+      \ 'neoclide/coc-json',
+      \ 'neoclide/coc-yaml',
+      \ 'neoclide/coc-rls',
+      \ 'neoclide/coc-snippets',
+      \ 'neoclide/coc-tsserver',
+      \ 'neoclide/coc-eslint',
+      \ 'neoclide/coc-pairs',
+      \ 'iamcco/coc-diagnostic',
+      \ 'iamcco/coc-vimlsp',
+      \ 'josa42/coc-docker',
+      \ 'josa42/coc-sh',
+      \ 'pantharshit00/coc-prisma',
+      \ ]
+  Plug coc_plugin, { 'do': 'yarn install --frozen-lockfile && yarn build' }
+endfor
+
+" TreeSitter:
+Plug 'nvim-treesitter/nvim-treesitter', { 'do': 'TSUpdate' }
+Plug 'nvim-treesitter/playground'
+
 call plug#end()
 
 " }}}
@@ -313,6 +346,282 @@ let g:python_highlight_space_errors = 0
 let g:python_highlight_all = 1
 
 "  }}}
+" Plugin: defx {{{
+
+let g:custom_defx_state = tempname()
+
+let g:defx_ignored_files = join([
+      \ '*.aux',
+      \ '*.egg-info/',
+      \ '*.o',
+      \ '*.out',
+      \ '*.pdf',
+      \ '*.pyc',
+      \ '*.toc',
+      \ '.*',
+      \ '__pycache__/',
+      \ 'build/',
+      \ 'dist/',
+      \ 'docs/_build/',
+      \ 'fonts/',
+      \ 'node_modules/',
+      \ 'pip-wheel-metadata/',
+      \ 'plantuml-images/',
+      \ 'site/',
+      \ 'target/',
+      \ 'venv.bak/',
+      \ 'venv/',
+      \ ], ',')
+
+let g:custom_defx_mappings = [
+      \ ['!             ', "defx#do_action('execute_command')"],
+      \ ['*             ', "defx#do_action('toggle_select_all')"],
+      \ [';             ', "defx#do_action('repeat')"],
+      \ ['<2-LeftMouse> ', "defx#is_directory() ? defx#do_action('open_tree', 'toggle') : defx#do_action('drop')"],
+      \ ['<C-g>         ', "defx#do_action('print')"],
+      \ ['<C-h>         ', "defx#do_action('resize', 31)"],
+      \ ['<C-i>         ', "defx#do_action('open_directory')"],
+      \ ['<C-o>         ', "defx#do_action('cd', ['..'])"],
+      \ ['<C-r>         ', "defx#do_action('redraw')"],
+      \ ['<C-t>         ', "defx#do_action('open', 'tabe')"],
+      \ ['<C-v>         ', "defx#do_action('open', 'vsplit')"],
+      \ ['<C-x>         ', "defx#do_action('drop', 'split')"],
+      \ ['<CR>          ', "defx#do_action('drop')"],
+      \ ['<RightMouse>  ', "defx#do_action('cd', ['..'])"],
+      \ ['O             ', "defx#do_action('open_tree', 'recursive:3')"],
+      \ ['p             ', "defx#do_action('preview')"],
+      \ ['a             ', "defx#do_action('toggle_select')"],
+      \ ['cc            ', "defx#do_action('copy')"],
+      \ ['cd            ', "defx#do_action('change_vim_cwd')"],
+      \ ['d             ', "defx#do_action('new_directory')"],
+      \ ['i             ', "defx#do_action('toggle_ignored_files')"],
+      \ ['ma            ', "defx#do_action('new_file')"],
+      \ ['md            ', "defx#do_action('remove')"],
+      \ ['mm            ', "defx#do_action('rename')"],
+      \ ['o             ', "defx#is_directory() ? defx#do_action('open_tree', 'toggle') : defx#do_action('drop')"],
+      \ ['P             ', "defx#do_action('paste')"],
+      \ ['q             ', "defx#do_action('quit')"],
+      \ ['ss            ', "defx#do_action('multi', [['toggle_sort', 'TIME'], 'redraw'])"],
+      \ ['t             ', "defx#do_action('open_tree', 'toggle')"],
+      \ ['u             ', "defx#do_action('cd', ['..'])"],
+      \ ['x             ', "defx#do_action('execute_system')"],
+      \ ['yy            ', "defx#do_action('yank_path')"],
+      \ ['~             ', "defx#do_action('cd')"],
+      \ ]
+
+function! s:autocmd_custom_defx()
+  if !exists('g:loaded_defx')
+    return
+  endif
+  call defx#custom#column('filename', {
+        \ 'min_width': 100,
+        \ 'max_width': 100,
+        \ })
+endfunction
+
+let g:defx_icons_column_length = 2
+
+function! s:open_defx_if_directory()
+  if !exists('g:loaded_defx')
+    echom 'Defx not installed, skipping...'
+    return
+  endif
+  if isdirectory(expand(expand('%:p')))
+    Defx `expand('%:p')`
+        \ -buffer-name=defx
+        \ -columns=mark:git:indent:icons:filename:type:size:time
+  endif
+endfunction
+
+function! s:defx_redraw()
+  if !exists('g:loaded_defx')
+    return
+  endif
+  call defx#redraw()
+endfunction
+
+function! s:defx_buffer_remappings() abort
+  " Define mappings
+  for [key, value] in g:custom_defx_mappings
+    execute 'nnoremap <silent><buffer><expr> ' . key . ' ' . value
+  endfor
+  nnoremap <silent><buffer> ?
+        \ :for [key, value] in g:custom_defx_mappings <BAR>
+        \ echo '' . key . ': ' . value <BAR>
+        \ endfor<CR>
+endfunction
+
+augroup custom_defx
+  autocmd!
+  autocmd VimEnter * call s:autocmd_custom_defx()
+  autocmd BufEnter * call s:open_defx_if_directory()
+  autocmd BufLeave,BufWinLeave \[defx\]* silent call defx#call_action('add_session')
+augroup end
+
+augroup custom_remap_defx
+  autocmd!
+  autocmd FileType defx call s:defx_buffer_remappings()
+  autocmd FileType defx nmap     <buffer> <silent> gp <Plug>(defx-git-prev)
+  autocmd FileType defx nmap     <buffer> <silent> gn <Plug>(defx-git-next)
+  autocmd FileType defx nmap     <buffer> <silent> gs <Plug>(defx-git-stage)
+  autocmd FileType defx nmap     <buffer> <silent> gu <Plug>(defx-git-reset)
+  autocmd FileType defx nmap     <buffer> <silent> gd <Plug>(defx-git-discard)
+  autocmd FileType defx nnoremap <buffer> <silent> <C-l> <cmd>ResizeWindowWidth<CR>
+augroup end
+
+
+"  }}}
+" Plugin: COC {{{
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
+
+augroup Smartf
+  autocmd User SmartfEnter :hi Conceal ctermfg=220 guifg=#6638F0
+  autocmd User SmartfLeave :hi Conceal ctermfg=239 guifg=#504945
+augroup end
+" }}}
+"  Plugin: treesitter {{{
+
+function s:init_treesitter()
+  if !exists('g:loaded_nvim_treesitter')
+    echom 'nvim-treesitter does not exist, skipping...'
+    return
+  endif
+lua << EOF
+require('nvim-treesitter.configs').setup({
+  highlight = {
+    enable = true,
+  },
+  textobjects = { enable = true },
+  autotag = { enable = true  },
+  ensure_installed = {
+    'bash',
+    'c',
+    'css',
+    'dockerfile',
+    'go',
+    'graphql',
+    'html',
+    'javascript',
+    'jsdoc',
+    'json',
+    'jsonc',
+    'lua',
+    'python',
+    'query',
+    'rust',
+    'svelte',
+    'toml',
+    'tsx',
+    'typescript',
+    'yaml',
+}})
+EOF
+endfunction
+
+augroup custom_treesitter
+  autocmd!
+  autocmd VimEnter * call s:init_treesitter()
+augroup end
+
+"  }}}
+" Plugin: Fzf {{{
+
+function! s:warn(message)
+  echohl WarningMsg
+  echom a:message
+  echohl None
+  return 0
+endfunction
+
+function! s:get_git_root()
+  let root = split(system('git rev-parse --show-toplevel'), '\n')[0]
+  return v:shell_error ? '' : root
+endfunction
+
+function! s:has_git_root()
+  let root = s:get_git_root()
+  return empty(root) ? 0 : 1
+endfunction
+
+command! -bang -nargs=* Grep call fzf#vim#grep('rg --column --line-number --no-heading --no-messages --fixed-strings --case-sensitive --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>).'| tr -d "\017"', 1, <bang>0)
+command! -bang -nargs=* GrepIgnoreCase call fzf#vim#grep('rg --column --line-number --no-heading --no-messages --fixed-strings --ignore-case --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>).'| tr -d "\017"', 1, <bang>0)
+
+let g:fzf_action = {
+      \ 'ctrl-o': 'edit',
+      \ 'ctrl-t': 'tab split',
+      \ 'ctrl-s': 'split',
+      \ 'ctrl-v': 'vsplit'
+      \ }
+
+
+function! s:fzf_edit_file(items)
+  let items = a:items
+  let i = 1
+  let ln = len(items)
+  while i < ln
+    let item = items[i]
+    let parts = split(item, ' ')
+    let file_path = get(parts, 1, '')
+    let items[i] = file_path
+    let i += 1
+  endwhile
+  call s:Sink(items)
+endfunction
+
+function! FzfWithDevIcons(command, preview)
+  let l:fzf_files_options = ' -m --bind ctrl-n:preview-page-down,ctrl-p:preview-page-up --preview "'.a:preview.'"'
+  let opts = fzf#wrap({})
+  let opts.source = a:command.'| devicon-lookup'
+  let s:Sink = opts['sink*']
+  let opts['sink*'] = function('s:fzf_edit_file')
+  let opts.options .= l:fzf_files_options
+  call fzf#run(opts)
+endfunction
+
+function! FzfFiles()
+  let l:fzf_preview = 'bat --color always --style plain {2..}'
+  let l:fzf_command = $FZF_DEFAULT_COMMAND
+  call FzfWithDevIcons(l:fzf_command, l:fzf_preview)
+endfunction
+
+function! FzfHomeFiles()
+  let l:fzf_preview = 'bat --color always --style plain {2..}'
+  let l:fzf_command = 'rg --files --no-ignore --no-messages --hidden --follow --glob "!.git/*" ~'
+  call FzfWithDevIcons(l:fzf_command, l:fzf_preview)
+endfunction
+
+function! FzfGitFiles()
+  if !s:has_git_root()
+    call s:warn('Not in a git directoy')
+    return
+  endif
+
+  let l:fzf_preview = 'bat --color always --style plain {2..}'
+  " can pipe to uniq because git ls-files returns an ordered list
+  let l:fzf_command = 'git ls-files | uniq'
+  call FzfWithDevIcons(l:fzf_command, l:fzf_preview)
+endfunction
+
+function! FzfDiffFiles()
+  if !s:has_git_root()
+    call s:warn('Not in a git directoy')
+    return
+  endif
+
+  let l:fzf_preview = 'bat --color always --style changes {2..}'
+  let l:fzf_command = 'git ls-files --modified --others --exclude-standard | uniq'
+  call FzfWithDevIcons(l:fzf_command, l:fzf_preview)
+endfunction
+
+
+" }}}
 " General: Key remappings {{{
 
 function! GlobalKeyMappings()
@@ -337,6 +646,34 @@ function! GlobalKeyMappings()
 
   " J: basically, unmap in normal mode unless range explicitly specified
   nnoremap <silent> <expr> J v:count == 0 ? '<esc>' : 'J'
+
+  nnoremap <silent> <space>j <cmd>Defx
+        \ -buffer-name=defx
+        \ -columns=mark:git:indent:icons:filename:type
+        \ -direction=topleft
+        \ -search=`expand('%:p')`
+        \ -session-file=`g:custom_defx_state`
+        \ -ignored-files=`g:defx_ignored_files`
+        \ -split=vertical
+        \ -toggle
+        \ -floating-preview
+        \ -vertical-preview
+        \ -preview-height=50
+        \ -winwidth=31
+        \ <CR>
+  nnoremap <silent> <space>J <cmd>Defx `expand('%:p:h')`
+        \ -buffer-name=defx
+        \ -columns=mark:git:indent:icons:filename:type
+        \ -direction=topleft
+        \ -search=`expand('%:p')`
+        \ -ignored-files=`g:defx_ignored_files`
+        \ -split=vertical
+        \ -floating-preview
+        \ -vertical-preview
+        \ -preview-height=50
+        \ -winwidth=31
+        \ <CR>
+  nnoremap <C-p> :GFiles<Cr>
 endfunction
 
 call GlobalKeyMappings()
