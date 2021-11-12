@@ -674,6 +674,7 @@ function! GlobalKeyMappings()
         \ -winwidth=31
         \ <CR>
   nnoremap <C-p> :GFiles<Cr>
+  nnoremap <C-g> :Ag<Cr>
 endfunction
 
 call GlobalKeyMappings()
