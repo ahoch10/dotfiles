@@ -186,6 +186,9 @@ endfor
 Plug 'nvim-treesitter/nvim-treesitter', { 'do': 'TSUpdate' }
 Plug 'nvim-treesitter/playground'
 
+"Git branch
+Plug 'itchyny/vim-gitbranch'
+
 call plug#end()
 
 " }}}
