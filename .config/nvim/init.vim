@@ -189,6 +189,9 @@ Plug 'nvim-treesitter/playground'
 "Git branch
 Plug 'itchyny/vim-gitbranch'
 
+"File type formatter
+Plug 'pappasam/vim-filetype-formatter'
+
 call plug#end()
 
 " }}}
@@ -650,6 +653,9 @@ function! GlobalKeyMappings()
   nnoremap <silent> <expr> J v:count == 0 ? '<esc>' : 'J'
 
   vnoremap <leader>y "+y
+
+  nnoremap <silent> <leader>f :FiletypeFormat<cr>
+  vnoremap <silent> <leader>f :FiletypeFormat<cr>
 
   nnoremap <silent> <space>j <cmd>Defx
         \ -buffer-name=defx
