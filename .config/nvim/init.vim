@@ -361,7 +361,6 @@ let g:defx_ignored_files = join([
       \ '*.pdf',
       \ '*.pyc',
       \ '*.toc',
-      \ '.*',
       \ '__pycache__/',
       \ 'build/',
       \ 'dist/',
@@ -649,6 +648,8 @@ function! GlobalKeyMappings()
 
   " J: basically, unmap in normal mode unless range explicitly specified
   nnoremap <silent> <expr> J v:count == 0 ? '<esc>' : 'J'
+
+  vnoremap <leader>y "+y
 
   nnoremap <silent> <space>j <cmd>Defx
         \ -buffer-name=defx
