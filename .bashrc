@@ -197,7 +197,7 @@ alias pbcopy="perl -pe 'chomp if eof' | xsel --clipboard --input"
 alias pbpaste="xsel --clipboard --output"
 
 # alias for VPN
-alias nm="nmcli c up aws"
+alias nmc="nmcli c up aws"
 
 # }}}
 # Functions --- {{{
