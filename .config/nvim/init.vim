@@ -627,6 +627,21 @@ endfunction
 
 
 " }}}
+" Plugin: Vim-FiletypeFormat {{{
+let g:vim_filetype_formatter_commands = {
+      \ 'python': 'black - -q --line-length 79',
+      \ 'javascript': 'npx -q prettier --parser flow',
+      \ 'javascript.jsx': 'npx -q prettier --parser flow',
+      \ 'typescript': 'npx -q prettier --parser typescript',
+      \ 'typescript.tsx': 'npx -q prettier --parser typescript',
+      \ 'typescriptreact': 'npx -q prettier --parser typescript',
+      \ 'svelte': 'npx -q prettier',
+      \ 'css': 'npx -q prettier --parser css',
+      \ 'less': 'npx -q prettier --parser less',
+      \ 'html': 'npx -q prettier --parser html',
+      \ 'vue': 'npx -q prettier --html-whitespace-sensitivity ignore --parser vue --stdin'
+      \}
+" }}}
 " General: Key remappings {{{
 
 function! GlobalKeyMappings()
