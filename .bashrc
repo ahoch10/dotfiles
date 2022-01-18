@@ -140,6 +140,12 @@ if [ -d "$HOME_BIN" ]; then
   path_ladd "$HOME_BIN"
 fi
 
+HOME_LOCAL_BIN="$HOME/.local/bin"
+if [ ! -d "$HOME_LOCAL_BIN" ]; then
+  mkdir -p "$HOME_LOCAL_BIN"
+fi
+path_ladd "$HOME_LOCAL_BIN"
+
 # EXPORT THE FINAL, MODIFIED PATH
 export PATH
 
@@ -189,6 +195,9 @@ alias l='ls -CF'
 # the perl step removes the final newline from the output
 alias pbcopy="perl -pe 'chomp if eof' | xsel --clipboard --input"
 alias pbpaste="xsel --clipboard --output"
+
+# alias for VPN
+alias nm="nmcli c up aws"
 
 # }}}
 # Functions --- {{{
