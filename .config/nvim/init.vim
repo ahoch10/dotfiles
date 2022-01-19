@@ -700,6 +700,7 @@ function! GlobalKeyMappings()
         \ <CR>
   nnoremap <C-p> :GFiles<Cr>
   nnoremap <C-g> :Rg<Cr>
+  nmap <silent> gd <Plug>(coc-definition)
 endfunction
 
 call GlobalKeyMappings()
