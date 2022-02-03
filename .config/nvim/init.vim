@@ -192,6 +192,9 @@ Plug 'itchyny/vim-gitbranch'
 "File type formatter
 Plug 'pappasam/vim-filetype-formatter'
 
+"Markdown-preview
+Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install'  }
+
 call plug#end()
 
 " }}}
@@ -671,6 +674,10 @@ function! GlobalKeyMappings()
 
   nnoremap <silent> <leader>f :FiletypeFormat<cr>
   vnoremap <silent> <leader>f :FiletypeFormat<cr>
+  nmap <silent><leader>p :MarkdownPreview<CR>
+
+
+  nnoremap <silent> <leader>rc :source ~/.config/nvim/init.vim<CR>:echo "Re-loaded config"<CR>
 
   nnoremap <silent> <space>j <cmd>Defx
         \ -buffer-name=defx
@@ -701,6 +708,8 @@ function! GlobalKeyMappings()
   nnoremap <C-p> :GFiles<Cr>
   nnoremap <C-g> :Rg<Cr>
   nmap <silent> gd <Plug>(coc-definition)
+  nmap <silent> <leader>gr <Plug>(coc-references)
+  nmap <silent> <leader>rn <Plug>(coc-rename)
 endfunction
 
 call GlobalKeyMappings()
