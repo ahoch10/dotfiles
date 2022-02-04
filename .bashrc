@@ -232,7 +232,7 @@ COLOR_RESET="\033[0m"
 BOLD="$(tput bold)"
 
 # Set Bash PS1
-PS1_DIR="\[$BOLD\]\[$COLOR_BRIGHT_BLUE\]\w"
+PS1_DIR="\[$BOLD\]\[$COLOR_BRIGHT_BLUE\]\w \[\033[00m\][\$(git symbolic-ref --short HEAD 2>/dev/null)]"
 PS1_USR="\[$BOLD\]\[$COLOR_GOLD\]\u@\h"
 PS1_END="\[$BOLD\]\[$COLOR_SILVER\]$ \[$COLOR_RESET\]"
 
