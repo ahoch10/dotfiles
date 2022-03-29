@@ -160,27 +160,6 @@ Plug 'junegunn/fzf.vim'
 
 "Auto-completion
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-for coc_plugin in [
-      \ 'coc-extensions/coc-svelte',
-      \ 'fannheyward/coc-markdownlint',
-      \ 'pappasam/coc-jedi',
-      \ 'neoclide/coc-css',
-      \ 'neoclide/coc-html',
-      \ 'neoclide/coc-json',
-      \ 'neoclide/coc-yaml',
-      \ 'neoclide/coc-rls',
-      \ 'neoclide/coc-snippets',
-      \ 'neoclide/coc-tsserver',
-      \ 'neoclide/coc-eslint',
-      \ 'neoclide/coc-pairs',
-      \ 'iamcco/coc-diagnostic',
-      \ 'iamcco/coc-vimlsp',
-      \ 'josa42/coc-docker',
-      \ 'josa42/coc-sh',
-      \ 'pantharshit00/coc-prisma',
-      \ ]
-  Plug coc_plugin, { 'do': 'yarn install --frozen-lockfile && yarn build' }
-endfor
 
 " TreeSitter:
 Plug 'nvim-treesitter/nvim-treesitter', { 'do': 'TSUpdate' }
@@ -480,6 +459,26 @@ augroup end
 
 "  }}}
 " Plugin: COC {{{
+
+let g:coc_global_extensions = [
+  \ 'coc-extensions/coc-svelte',
+  \ 'fannheyward/coc-markdownlint',
+  \ 'pappasam/coc-jedi',
+  \ 'neoclide/coc-css',
+  \ 'neoclide/coc-html',
+  \ 'neoclide/coc-json',
+  \ 'neoclide/coc-yaml',
+  \ 'neoclide/coc-rls',
+  \ 'neoclide/coc-snippets',
+  \ 'neoclide/coc-tsserver',
+  \ 'neoclide/coc-eslint',
+  \ 'neoclide/coc-pairs',
+  \ 'iamcco/coc-diagnostic',
+  \ 'iamcco/coc-vimlsp',
+  \ 'josa42/coc-docker',
+  \ 'josa42/coc-sh',
+  \ 'pantharshit00/coc-prisma',
+  \ ]
 
 function! s:show_documentation()
   if (index(['vim','help'], &filetype) >= 0)
