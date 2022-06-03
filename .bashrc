@@ -132,6 +132,16 @@ export GDK_SCALE=0
 export HISTCONTROL=ignorespace
 export HISTSIZE=5000
 
+# avoid duplicates..
+export HISTCONTROL=ignoredups:erasedups
+
+# append history entries..
+shopt -s histappend
+
+# After each command, save and reload history
+export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
+
+
 # }}}
 # Path appends + Misc env setup --- {{{
 
@@ -252,3 +262,87 @@ source $HOME/.asdf/completions/asdf.bash
 umask 022
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+
+function pyglobal-install() {  ## Install global Python applications
+  pip install -U pipx pynvim neovim-remote
+  pydev-install
+  asdf reshim python
+  local for_pipx=(
+    alacritty-colorscheme
+    aws-sam-cli
+    black
+    cookiecutter
+    docformatter
+    docker-compose
+    isort
+    jupyterlab
+    jupytext
+    nginx-language-server
+    pre-commit
+    restview
+    toml-sort
+    ueberzug
+  )
+  if command -v pipx > /dev/null; then
+    for arg in $for_pipx; do
+      # We avoid reinstall because it won't install uninstalled pacakges
+      pipx uninstall "$arg"
+      pipx install "$arg"
+    done
+  else
+    echo 'pipx not installed. Install with "pip install pipx"'
+  fi
+}
+
+# activate virtual environment from any directory from current and up
+# Name of virtualenv
+VIRTUAL_ENV_DEFAULT=.venv
+function va() {  # No arguments
+  local venv_name="$VIRTUAL_ENV_DEFAULT"
+  local old_venv=$VIRTUAL_ENV
+  local slashes=${PWD//[^\/]/}
+  local current_directory="$PWD"
+  for (( n=${#slashes}; n>0; --n ))
+  do
+    if [ -d "$current_directory/$venv_name" ]; then
+      source "$current_directory/$venv_name/bin/activate"
+      if [[ "$old_venv" != "$VIRTUAL_ENV" ]]; then
+        echo "Activated $(python --version) virtualenv in $VIRTUAL_ENV"
+      fi
+      return
+    fi
+    local current_directory="$current_directory/.."
+  done
+  # # If reached this step, no virtual environment found from here to root
+  # if [[ -z $VIRTUAL_ENV ]]; then
+  # else
+  #   deactivate
+  #   echo "Disabled existing virtualenv $old_venv"
+  # fi
+}
+
+# Create and activate a virtual environment with all Python dependencies
+# installed. Optionally change Python interpreter.
+function ve() {  # Optional arg: python interpreter name
+  local venv_name="$VIRTUAL_ENV_DEFAULT"
+  if [ -z "$1" ]; then
+    local python_name='python'
+  else
+    local python_name="$1"
+  fi
+  if [ ! -d "$venv_name" ]; then
+    $python_name -m venv "$venv_name"
+    if [ $? -ne 0 ]; then
+      local error_code=$?
+      echo "Virtualenv creation failed, aborting"
+      return error_code
+    fi
+    source "$venv_name/bin/activate"
+    pip install -U pip
+    pydev-install  # install dependencies for editing
+    deactivate
+  else
+    echo "$venv_name already exists, activating"
+  fi
+  source $venv_name/bin/activate
+}
