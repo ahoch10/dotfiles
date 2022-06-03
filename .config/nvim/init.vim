@@ -127,6 +127,10 @@ set updatetime=750
 " Linux Dev Path: system libraries
 set path+=/usr/include/x86_64-linux-gnu/
 
+set cursorline
+
+let g:python3_host_prog = "$HOME/.asdf/shims/python"
+
 " }}}
 " General: Plugin Install {{{
 
@@ -143,6 +147,7 @@ Plug 'fcpg/vim-altscreen'
 
 " Basic coloring
 Plug 'NLKNguyen/papercolor-theme'
+Plug 'pappasam/papercolor-theme-slim'
 
 " Utils
 Plug 'tpope/vim-commentary'
@@ -164,6 +169,9 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 " TreeSitter:
 Plug 'nvim-treesitter/nvim-treesitter', { 'do': 'TSUpdate' }
 Plug 'nvim-treesitter/playground'
+
+"Svelte supoprt
+Plug 'evanleck/vim-svelte'
 
 "Git branch
 Plug 'itchyny/vim-gitbranch'
@@ -321,7 +329,7 @@ let g:PaperColor_Theme_Options.language = {
 
 " Load Syntax:
 try
-  colorscheme PaperColor
+  colorscheme PaperColorSlim
 catch
   echo 'An error occured while configuring PaperColor'
 endtry
@@ -461,23 +469,23 @@ augroup end
 " Plugin: COC {{{
 
 let g:coc_global_extensions = [
-  \ 'coc-extensions/coc-svelte',
-  \ 'fannheyward/coc-markdownlint',
-  \ 'pappasam/coc-jedi',
-  \ 'neoclide/coc-css',
-  \ 'neoclide/coc-html',
-  \ 'neoclide/coc-json',
-  \ 'neoclide/coc-yaml',
-  \ 'neoclide/coc-rls',
-  \ 'neoclide/coc-snippets',
-  \ 'neoclide/coc-tsserver',
-  \ 'neoclide/coc-eslint',
-  \ 'neoclide/coc-pairs',
-  \ 'iamcco/coc-diagnostic',
-  \ 'iamcco/coc-vimlsp',
-  \ 'josa42/coc-docker',
-  \ 'josa42/coc-sh',
-  \ 'pantharshit00/coc-prisma',
+  \ 'coc-svelte',
+  \ 'coc-markdownlint',
+  \ 'coc-jedi',
+  \ 'coc-css',
+  \ 'coc-html',
+  \ 'coc-json',
+  \ 'coc-yaml',
+  \ 'coc-rls',
+  \ 'coc-snippets',
+  \ 'coc-tsserver',
+  \ 'coc-eslint',
+  \ 'coc-pairs',
+  \ 'coc-diagnostic',
+  \ 'coc-vimlsp',
+  \ 'coc-docker',
+  \ 'coc-sh',
+  \ 'coc-prisma',
   \ ]
 
 function! s:show_documentation()
