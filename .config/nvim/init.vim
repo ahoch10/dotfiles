@@ -649,7 +649,6 @@ let g:vim_filetype_formatter_commands = {
       \ 'typescript': 'npx -q prettier --parser typescript',
       \ 'typescript.tsx': 'npx -q prettier --parser typescript',
       \ 'typescriptreact': 'npx -q prettier --parser typescript',
-      \ 'svelte': 'npx -q prettier',
       \ 'css': 'npx -q prettier --parser css',
       \ 'less': 'npx -q prettier --parser less',
       \ 'html': 'npx -q prettier --parser html',
