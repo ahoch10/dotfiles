@@ -776,6 +776,7 @@ function! GlobalKeyMappings()
   nnoremap <C-p> :GFiles<Cr>
   nnoremap <C-g> :Rg<Cr>
   nmap <silent> gd <Plug>(coc-definition)
+  nnoremap <silent>        <C-k> <Cmd>call CocActionAsync('doHover')<CR>
   nmap <silent> <leader>gr <Plug>(coc-references)
   nmap <silent> <leader>rn <Plug>(coc-rename)
 endfunction
