@@ -346,3 +346,6 @@ function ve() {  # Optional arg: python interpreter name
   fi
   source $venv_name/bin/activate
 }
+
+eval "$(direnv hook bash)"
+
