@@ -185,6 +185,9 @@ Plug 'pappasam/vim-filetype-formatter'
 "Markdown-preview
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install'  }
 
+"goyo
+Plug 'junegunn/goyo.vim'
+
 call plug#end()
 
 " }}}
@@ -484,7 +487,6 @@ let g:coc_global_extensions = [
   \ 'coc-svelte',
   \ 'coc-tsserver',
   \ 'coc-eslint',
-  \ 'coc-pairs',
   \ 'coc-diagnostic',
   \ 'coc-vimlsp',
   \ 'coc-docker',
@@ -779,6 +781,9 @@ function! GlobalKeyMappings()
   nnoremap <silent>        <C-k> <Cmd>call CocActionAsync('doHover')<CR>
   nmap <silent> <leader>gr <Plug>(coc-references)
   nmap <silent> <leader>rn <Plug>(coc-rename)
+
+  " mapping to run goyo
+  nnoremap <Leader>go :Goyo<cr>:set wrap<cr>
 endfunction
 
 call GlobalKeyMappings()
