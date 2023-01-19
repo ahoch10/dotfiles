@@ -158,10 +158,13 @@ Plug 'vim-python/python-syntax'
 " Indentation
 Plug 'Vimjas/vim-python-pep8-indent'
 
-"File navigation
-Plug 'Shougo/defx.nvim'
+""File navigation
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
+
+"nvim-tree
+Plug 'nvim-tree/nvim-web-devicons'
+Plug 'nvim-tree/nvim-tree.lua'
 
 "Auto-completion
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
@@ -190,6 +193,31 @@ Plug 'junegunn/goyo.vim'
 
 call plug#end()
 
+" }}}
+" lua packages {{{
+function! s:safe_require(package)
+  try
+    execute "lua require('" . a:package . "')"
+  catch
+    echom "Error with lua require('" . a:package . "')"
+  endtry
+endfunction
+
+function! s:setup_lua_packages()
+  call s:safe_require('config.nvim-tree')
+  call s:safe_require('config.nvim-treesitter')
+  call s:safe_require('config.nvim-web-devicons')
+endfunction
+
+call s:setup_lua_packages()
+
+augroup custom_general_lua_extensions
+  autocmd!
+  autocmd FileType vim let &l:path .= ','.stdpath('config').'/lua'
+  autocmd FileType vim setlocal
+        \ includeexpr=substitute(v:fname,'\\.','/','g')
+        \ suffixesadd^=.lua
+augroup end
 " }}}
 " General: Status Line and Tab Line {{{
 
@@ -348,130 +376,6 @@ let g:python_highlight_space_errors = 0
 let g:python_highlight_all = 1
 
 "  }}}
-" Plugin: defx {{{
-
-let g:custom_defx_state = tempname()
-
-let g:defx_ignored_files = join([
-      \ '*.aux',
-      \ '*.egg-info/',
-      \ '*.o',
-      \ '*.out',
-      \ '*.pdf',
-      \ '*.pyc',
-      \ '*.toc',
-      \ '__pycache__/',
-      \ 'build/',
-      \ 'dist/',
-      \ 'docs/_build/',
-      \ 'fonts/',
-      \ 'node_modules/',
-      \ 'pip-wheel-metadata/',
-      \ 'plantuml-images/',
-      \ 'site/',
-      \ 'target/',
-      \ 'venv.bak/',
-      \ 'venv/',
-      \ ], ',')
-
-let g:custom_defx_mappings = [
-      \ ['!             ', "defx#do_action('execute_command')"],
-      \ ['*             ', "defx#do_action('toggle_select_all')"],
-      \ [';             ', "defx#do_action('repeat')"],
-      \ ['<2-LeftMouse> ', "defx#is_directory() ? defx#do_action('open_tree', 'toggle') : defx#do_action('drop')"],
-      \ ['<C-g>         ', "defx#do_action('print')"],
-      \ ['<C-h>         ', "defx#do_action('resize', 31)"],
-      \ ['<C-i>         ', "defx#do_action('open_directory')"],
-      \ ['<C-o>         ', "defx#do_action('cd', ['..'])"],
-      \ ['<C-r>         ', "defx#do_action('redraw')"],
-      \ ['<C-t>         ', "defx#do_action('open', 'tabe')"],
-      \ ['<C-v>         ', "defx#do_action('open', 'vsplit')"],
-      \ ['<C-x>         ', "defx#do_action('drop', 'split')"],
-      \ ['<CR>          ', "defx#do_action('drop')"],
-      \ ['<RightMouse>  ', "defx#do_action('cd', ['..'])"],
-      \ ['O             ', "defx#do_action('open_tree', 'recursive:3')"],
-      \ ['p             ', "defx#do_action('preview')"],
-      \ ['a             ', "defx#do_action('toggle_select')"],
-      \ ['cc            ', "defx#do_action('copy')"],
-      \ ['cd            ', "defx#do_action('change_vim_cwd')"],
-      \ ['d             ', "defx#do_action('new_directory')"],
-      \ ['i             ', "defx#do_action('toggle_ignored_files')"],
-      \ ['ma            ', "defx#do_action('new_file')"],
-      \ ['md            ', "defx#do_action('remove')"],
-      \ ['mm            ', "defx#do_action('rename')"],
-      \ ['o             ', "defx#is_directory() ? defx#do_action('open_tree', 'toggle') : defx#do_action('drop')"],
-      \ ['P             ', "defx#do_action('paste')"],
-      \ ['q             ', "defx#do_action('quit')"],
-      \ ['ss            ', "defx#do_action('multi', [['toggle_sort', 'TIME'], 'redraw'])"],
-      \ ['t             ', "defx#do_action('open_tree', 'toggle')"],
-      \ ['u             ', "defx#do_action('cd', ['..'])"],
-      \ ['x             ', "defx#do_action('execute_system')"],
-      \ ['yy            ', "defx#do_action('yank_path')"],
-      \ ['~             ', "defx#do_action('cd')"],
-      \ ]
-
-function! s:autocmd_custom_defx()
-  if !exists('g:loaded_defx')
-    return
-  endif
-  call defx#custom#column('filename', {
-        \ 'min_width': 100,
-        \ 'max_width': 100,
-        \ })
-endfunction
-
-let g:defx_icons_column_length = 2
-
-function! s:open_defx_if_directory()
-  if !exists('g:loaded_defx')
-    echom 'Defx not installed, skipping...'
-    return
-  endif
-  if isdirectory(expand(expand('%:p')))
-    Defx `expand('%:p')`
-        \ -buffer-name=defx
-        \ -columns=mark:git:indent:icons:filename:type:size:time
-  endif
-endfunction
-
-function! s:defx_redraw()
-  if !exists('g:loaded_defx')
-    return
-  endif
-  call defx#redraw()
-endfunction
-
-function! s:defx_buffer_remappings() abort
-  " Define mappings
-  for [key, value] in g:custom_defx_mappings
-    execute 'nnoremap <silent><buffer><expr> ' . key . ' ' . value
-  endfor
-  nnoremap <silent><buffer> ?
-        \ :for [key, value] in g:custom_defx_mappings <BAR>
-        \ echo '' . key . ': ' . value <BAR>
-        \ endfor<CR>
-endfunction
-
-augroup custom_defx
-  autocmd!
-  autocmd VimEnter * call s:autocmd_custom_defx()
-  autocmd BufEnter * call s:open_defx_if_directory()
-  autocmd BufLeave,BufWinLeave \[defx\]* silent call defx#call_action('add_session')
-augroup end
-
-augroup custom_remap_defx
-  autocmd!
-  autocmd FileType defx call s:defx_buffer_remappings()
-  autocmd FileType defx nmap     <buffer> <silent> gp <Plug>(defx-git-prev)
-  autocmd FileType defx nmap     <buffer> <silent> gn <Plug>(defx-git-next)
-  autocmd FileType defx nmap     <buffer> <silent> gs <Plug>(defx-git-stage)
-  autocmd FileType defx nmap     <buffer> <silent> gu <Plug>(defx-git-reset)
-  autocmd FileType defx nmap     <buffer> <silent> gd <Plug>(defx-git-discard)
-  autocmd FileType defx nnoremap <buffer> <silent> <C-l> <cmd>ResizeWindowWidth<CR>
-augroup end
-
-
-"  }}}
 " Plugin: COC {{{
 
 let g:coc_global_extensions = [
@@ -509,47 +413,47 @@ augroup end
 " }}}
 "  Plugin: treesitter {{{
 
-function s:init_treesitter()
-  if !exists('g:loaded_nvim_treesitter')
-    echom 'nvim-treesitter does not exist, skipping...'
-    return
-  endif
-lua << EOF
-require('nvim-treesitter.configs').setup({
-  highlight = {
-    enable = true,
-  },
-  textobjects = { enable = true },
-  autotag = { enable = true  },
-  ensure_installed = {
-    'bash',
-    'c',
-    'css',
-    'dockerfile',
-    'go',
-    'graphql',
-    'html',
-    'javascript',
-    'jsdoc',
-    'json',
-    'jsonc',
-    'lua',
-    'python',
-    'query',
-    'rust',
-    'svelte',
-    'toml',
-    'tsx',
-    'typescript',
-    'yaml',
-}})
-EOF
-endfunction
+" function s:init_treesitter()
+"   if !exists('g:loaded_nvim_treesitter')
+"     echom 'nvim-treesitter does not exist, skipping...'
+"     return
+"   endif
+" lua << EOF
+" require('nvim-treesitter.configs').setup({
+"   highlight = {
+"     enable = true,
+"   },
+"   textobjects = { enable = true },
+"   autotag = { enable = true  },
+"   ensure_installed = {
+"     'bash',
+"     'c',
+"     'css',
+"     'dockerfile',
+"     'go',
+"     'graphql',
+"     'html',
+"     'javascript',
+"     'jsdoc',
+"     'json',
+"     'jsonc',
+"     'lua',
+"     'python',
+"     'query',
+"     'rust',
+"     'svelte',
+"     'toml',
+"     'tsx',
+"     'typescript',
+"     'yaml',
+" }})
+" EOF
+" endfunction
 
-augroup custom_treesitter
-  autocmd!
-  autocmd VimEnter * call s:init_treesitter()
-augroup end
+" augroup custom_treesitter
+"   autocmd!
+"   autocmd VimEnter * call s:init_treesitter()
+" augroup end
 
 "  }}}
 " Plugin: Fzf {{{
@@ -749,32 +653,8 @@ function! GlobalKeyMappings()
 
   nnoremap <silent> <leader>rc :source ~/.config/nvim/init.vim<CR>:echo "Re-loaded config"<CR>
 
-  nnoremap <silent> <space>j <cmd>Defx
-        \ -buffer-name=defx
-        \ -columns=mark:git:indent:icons:filename:type
-        \ -direction=topleft
-        \ -search=`expand('%:p')`
-        \ -session-file=`g:custom_defx_state`
-        \ -ignored-files=`g:defx_ignored_files`
-        \ -split=vertical
-        \ -toggle
-        \ -floating-preview
-        \ -vertical-preview
-        \ -preview-height=50
-        \ -winwidth=31
-        \ <CR>
-  nnoremap <silent> <space>J <cmd>Defx `expand('%:p:h')`
-        \ -buffer-name=defx
-        \ -columns=mark:git:indent:icons:filename:type
-        \ -direction=topleft
-        \ -search=`expand('%:p')`
-        \ -ignored-files=`g:defx_ignored_files`
-        \ -split=vertical
-        \ -floating-preview
-        \ -vertical-preview
-        \ -preview-height=50
-        \ -winwidth=31
-        \ <CR>
+  nnoremap <silent> <space>j <Cmd>NvimTreeFindFileToggle<CR>
+  nnoremap <silent> <space>J <Cmd>NvimTreeToggle<CR>
   nnoremap <C-p> :GFiles<Cr>
   nnoremap <C-g> :Rg<Cr>
   nmap <silent> gd <Plug>(coc-definition)
