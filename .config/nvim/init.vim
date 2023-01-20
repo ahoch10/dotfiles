@@ -191,6 +191,9 @@ Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install'  }
 "goyo
 Plug 'junegunn/goyo.vim'
 
+"auto-pairs
+Plug 'windwp/nvim-autopairs'
+
 call plug#end()
 
 " }}}
@@ -207,6 +210,7 @@ function! s:setup_lua_packages()
   call s:safe_require('config.nvim-tree')
   call s:safe_require('config.nvim-treesitter')
   call s:safe_require('config.nvim-web-devicons')
+  call s:safe_require('config.nvim-autopairs')
 endfunction
 
 call s:setup_lua_packages()
