@@ -209,6 +209,9 @@ alias pbpaste="xsel --clipboard --output"
 # alias for VPN
 alias nmc="nmcli c up aws"
 
+# alias for KIP-Rocket
+alias rocket="cd ~/keplergrp/KIP-Rocket/ && tmux"
+
 # }}}
 # Functions --- {{{
 
