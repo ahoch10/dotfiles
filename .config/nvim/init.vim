@@ -632,6 +632,13 @@ function! GlobalKeyMappings()
 
   " MoveVisual: up and down visually only if count is specified before
   " Otherwise, you want to move up lines numerically e.g. ignore wrapped lines
+
+  " Insert a new line with one keystroke
+  nnoremap <CR> o<Esc>
+  nnoremap - O<Esc>
+
+  nnoremap ' ,
+
   nnoremap <expr> k
         \ v:count == 0 ? 'gk' : 'k'
   vnoremap <expr> k
@@ -648,6 +655,15 @@ function! GlobalKeyMappings()
   nnoremap <silent> <expr> J v:count == 0 ? '<esc>' : 'J'
 
   vnoremap <leader>y "+y
+
+  nnoremap <A-1> 1gt
+  nnoremap <A-2> 2gt
+  nnoremap <A-3> 3gt
+  nnoremap <A-4> 4gt
+  nnoremap <A-5> 5gt
+  nnoremap <A-6> 6gt
+  nnoremap <A-7> 7gt
+  nnoremap <A-8> 8gt
 
   nnoremap <silent> <leader>f :FiletypeFormat<cr>
   vnoremap <silent> <leader>f :FiletypeFormat<cr>
