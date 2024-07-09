@@ -195,6 +195,9 @@ Plug 'junegunn/goyo.vim'
 "auto-pairs
 Plug 'windwp/nvim-autopairs'
 
+"vim-fugitive
+Plug 'tpope/vim-fugitive'
+
 call plug#end()
 
 " }}}
