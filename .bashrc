@@ -212,6 +212,9 @@ alias nmc="nmcli c up aws"
 # alias for KIP-Rocket
 alias rocket="cd ~/keplergrp/KIP-Rocket/ && tmux"
 
+# alias for developr journal
+alias journal="vim ~/playground/developer-journal.md"
+
 # }}}
 # Functions --- {{{
 
@@ -352,3 +355,5 @@ function ve() {  # Optional arg: python interpreter name
 
 eval "$(direnv hook bash)"
 
+## Rscript
+export R_EXTRA_CONFIGURE_OPTIONS='--enable-R-shlib --with-cairo'
