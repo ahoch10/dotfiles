@@ -130,6 +130,7 @@ set path+=/usr/include/x86_64-linux-gnu/
 set cursorline
 
 let g:python3_host_prog = "$HOME/.asdf/shims/python"
+let g:loaded_python3_provider = 0
 
 " }}}
 " General: Plugin Install {{{
