@@ -1,0 +1,35 @@
+[user]
+  email = anathochberg@gmail.com
+  name = anathochberg
+
+[core]
+  editor = nvim
+	autocrlf = input
+	safecrlf = true
+  pager = cat
+
+[alias]
+  hist = log --pretty=format:'%h %ad | %s%d [%an]' --graph --date=short
+  type = cat-file -t
+  dump = cat-file -p
+  root = rev-parse --show-toplevel
+  co = checkout
+  ci = commit
+  st = status
+  br = branch
+
+[credential "https://github.com"]
+  username = ahoch10
+
+[credential]
+	helper = manager
+
+[pull]
+  rebase = true
+
+[delta]
+  plus-style =  syntax "#214f11" # set background color
+  syntax-theme = Monokai Extended
+  dark = true
+  side-by-side = true
+
