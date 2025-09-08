@@ -2,6 +2,7 @@
 "
 "
 "
+"
 " Author: Samuel Roeca
 " Date: August 15, 2017
 " TLDR: vimrc minimum viable product for Python programming
@@ -199,6 +200,9 @@ Plug 'windwp/nvim-autopairs'
 
 "vim-fugitive
 Plug 'tpope/vim-fugitive'
+
+"In-line linting
+Plug 'dense-analysis/ale'
 
 call plug#end()
 
@@ -558,8 +562,15 @@ endfunction
 
 " }}}
 " Plugin: Vim-FiletypeFormat {{{
+function s:formatter_python()
+  return printf(
+        \ 'ruff check --unsafe-fixes -q --fix-only --stdin-filename="%1$s" - | ' ..
+        \ 'ruff format -q --stdin-filename="%1$s" -',
+        \ expand('%:p'))
+endfunction
+
 let g:vim_filetype_formatter_commands = {
-      \ 'python': 'black - -q --line-length 79',
+      \ 'python': function('s:formatter_python'),
       \ 'javascript': 'npx -q prettier --parser flow',
       \ 'javascript.jsx': 'npx -q prettier --parser flow',
       \ 'typescript': 'npx -q prettier --parser typescript',
@@ -571,7 +582,7 @@ let g:vim_filetype_formatter_commands = {
       \ 'vue': 'npx -q prettier --html-whitespace-sensitivity ignore --parser vue --stdin'
       \}
 " }}}
-" {{{Gitsigns
+" {{{Plugin: Gitsigns
 function! s:init_gitsigns()
   try
 lua << EOF
@@ -635,6 +646,20 @@ augroup custom_general_lua_extensions
   autocmd!
   autocmd VimEnter * call s:init_gitsigns()
 augroup end
+
+" }}}
+" Plugin: Ale Linter {{{
+
+let g:ale_virtualtext_cursor = 'disabled' " disable virtual text
+
+let g:ale_fixers = {
+\       "python": ["black", "ruff", "mypy"],
+\}
+
+let g:ale_linters_ignore = {'markdown': ['markdownlint', 'all', 'markdown']}
+
+" Only run linters named in ale_linters settings.
+let g:ale_linters_explicit = 1
 
 " }}}
 " General: Key remappings {{{
