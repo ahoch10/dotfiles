@@ -82,7 +82,7 @@ set autoread
 set grepprg=rg\ --vimgrep
 
 " Paste: this is actually typed <C-/>, but term nvim thinks this is <C-_>
-set pastetoggle=<C-_>
+" set pastetoggle=<C-_>
 
 set notimeout   " don't timeout on mappings
 set ttimeout    " do timeout on terminal key codes
@@ -190,7 +190,8 @@ Plug 'lewis6991/gitsigns.nvim'
 Plug 'pappasam/vim-filetype-formatter'
 
 "Markdown-preview
-Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install'  }
+" Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install'  }
+Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && npx --yes yarn install' }
 
 "goyo
 Plug 'junegunn/goyo.vim'

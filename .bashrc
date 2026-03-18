@@ -177,7 +177,7 @@ include ~/.bash/sensitive
 # Executed Commands --- {{{
 
 # turn off ctrl-s and ctrl-q from freezing / unfreezing terminal
-stty -ixon
+# stty -ixon
 
 # }}}
 # Aliases --- {{{
@@ -211,6 +211,7 @@ alias nmc="nmcli c up aws"
 
 # alias for KIP-Rocket
 alias rocket="cd ~/keplergrp/KIP-Rocket/ && tmux"
+alias kplr="cd ~/keplergrp/ && tmux"
 
 # alias for developr journal
 alias journal="vim ~/playground/developer-journal.md"
@@ -245,7 +246,7 @@ COLOR_WHITE="\033[0;37m"
 COLOR_GOLD="\033[38;5;142m"
 COLOR_SILVER="\033[38;5;248m"
 COLOR_RESET="\033[0m"
-BOLD="$(tput bold)"
+# BOLD="$(tput bold)"
 
 # Set Bash PS1
 PS1_DIR="\[$BOLD\]\[$COLOR_BRIGHT_BLUE\]\w \[\033[00m\][\$(git symbolic-ref --short HEAD 2>/dev/null)]"
@@ -256,13 +257,7 @@ PS1="${PS1_DIR}\
 
 ${PS1_USR} ${PS1_END}"
 
-# }}}
-# ASDF: environment manager setup {{{
 
-source $HOME/.asdf/asdf.sh
-source $HOME/.asdf/completions/asdf.bash
-
-# }}}
 
 # Prevent file creation permissions annoyances
 umask 022
@@ -353,7 +348,36 @@ function ve() {  # Optional arg: python interpreter name
   source $venv_name/bin/activate
 }
 
-eval "$(direnv hook bash)"
+# eval "$(direnv hook bash)"
 
 ## Rscript
 export R_EXTRA_CONFIGURE_OPTIONS='--enable-R-shlib --with-cairo'
+
+eval "$(~/.local/bin/mise activate bash)"
+
+## AWS
+export AWS_PROFILE=default
+export AWS_REGION=us-east-1  # or your preferred region
+export CLAUDE_CODE_USE_BEDROCK=1
+
+function upgrade() {
+  sudo -v
+  sudo apt update
+  sudo apt upgrade -y
+  sudo apt autoremove -y
+  sudo snap refresh
+  mise self-update -y
+  mise upgrade -y
+  mise install -y
+}
+
+function kip3() {
+  local servicename
+  servicename=$(basename "$(pwd)" | tr '[:upper:]' '[:lower:]')
+  if docker compose ps "$servicename" &>/dev/null; then
+    USERID=$(id -u) docker compose exec "$servicename" "$@"
+  else
+    echo "'$servicename' not found in compose.yml config"
+    return 1
+  fi
+}
