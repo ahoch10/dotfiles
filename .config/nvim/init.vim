@@ -175,7 +175,6 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 " TreeSitter:
 Plug 'nvim-treesitter/nvim-treesitter', { 'do': 'TSUpdate' }
-Plug 'nvim-treesitter/playground'
 
 "Svelte supoprt
 Plug 'evanleck/vim-svelte'
@@ -191,7 +190,7 @@ Plug 'pappasam/vim-filetype-formatter'
 
 "Markdown-preview
 " Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install'  }
-Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && npx --yes yarn install' }
+Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() } }
 
 "goyo
 Plug 'junegunn/goyo.vim'

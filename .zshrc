@@ -7,6 +7,10 @@
 # Set up environment and PATH
 #######################################################################
 
+# Startup
+
+echo "Hello, Anat"
+
 # Functions --- {{{
 
 path_ladd() {
@@ -89,16 +93,26 @@ export PATH
 # Aliases --- {{{
 
 # enable color support of ls and also add handy aliases
-if [ -x /usr/bin/dircolors ]; then
-  test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-  alias ls='ls --color=auto'
-  alias dir='dir --color=auto'
-  alias vdir='vdir --color=auto'
+# if [ -x /usr/bin/dircolors ]; then
+#   test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+#   alias ls='ls --color=auto'
+#   alias dir='dir --color=auto'
+#   alias vdir='vdir --color=auto'
 
-  alias grep='grep --color=auto'
-  alias fgrep='fgrep --color=auto'
-  alias egrep='egrep --color=auto'
-fi
+#   alias grep='grep --color=auto'
+#   alias fgrep='fgrep --color=auto'
+#   alias egrep='egrep --color=auto'
+# fi
+
+
+# Enable colors for ls
+export CLICOLOR=1
+
+# Define the colors (Directory, Symlink, Socket, Pipe, Exec, etc.)
+# This example sets Directories to Bold Blue and Executables to Red
+export LSCOLORS="Gxfxcxdxbxegedabagacad"
+
+alias ls='ls -G'``
 
 # Make "vim" direct to nvim
 alias vim=nvim
@@ -201,7 +215,7 @@ PROMPT='%B%F{115}%~ %f%b[${vcs_info_msg_0_}]
 # }}}
 # Mise --- {{{
 
-eval "$(~/.local/bin/mise activate zsh)"
+eval "$(mise activate zsh)"
 
 # }}}
 # AWS --- {{{
@@ -211,3 +225,10 @@ export AWS_REGION=us-east-1
 export CLAUDE_CODE_USE_BEDROCK=1
 
 # }}}
+
+
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+autoload -Uz compinit && compinit
+export PATH="/opt/homebrew/opt/libpq/bin:$PATH"

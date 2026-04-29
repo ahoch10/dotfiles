@@ -1,0 +1,9 @@
+[tools]
+aws-cli = { version = "latest", symlink_bins = "true" }
+neovim = "latest"
+node = "24"
+tmux = "latest"
+python = "3.13.11"
+"pipx:poetry" = { version = "latest", uvx_args = "--with poetry-plugin-export" }
+uv = "latest"
+
